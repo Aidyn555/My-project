@@ -37,24 +37,46 @@ class AricleViewModel extends ChangeNotifier {
   final ArticleModel model;
   Summary? summary;
   Exception? error;
-  bool isloading =false;
-  AricleViewModel(this.model){
+  bool isloading = false;
+  AricleViewModel(this.model) {
     fetchArticle();
   }
-  void fetchArticle() async{
-  isloading = true;
-  notifyListeners();
-  try {
-  summary = await model.getRandomArticle();
-  error = null;
-  } on HttpException catch(e){
-  summary = null;
-  error = e;
-  }
-  isloading = false;
-  notifyListeners();
-
-      }
+  void fetchArticle() async {
+    isloading = true;
+    notifyListeners();
+    try {
+      summary = await model.getRandomArticle();
+      error = null;
+    } on HttpException catch (e) {
+      summary = null;
+      error = e;
     }
+    isloading = false;
+    notifyListeners();
+  }
+}
 
+class ArticleWidget extends StatelessWidget {
+  final Summary summary;
+  ArticleWidget({super.key, required this.summary})
+  @override
+  Widget build(BuildContext context){
+    return Padding(padding: EdgeInsets.all(8.0),
+    child: Column(
+      spacing: 10,
+      children: [if (summary.hasImage) Image.network(summary.originalImage!.source),
+      Text(
+        summary.titles.normalized,
+        overflow: TextOverflow.ellipsis,
+        style: Theme.of(context).textTheme.displaySmall,
+        ),
+      if (summary.description ! = null)
+      Text(summary.description!
+      overflow: TextOverflow,),
 
+      Text(summary.extract),
+      ],
+    ),
+    );
+  }
+}
