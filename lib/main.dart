@@ -14,7 +14,7 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
+      home: Scaffold(body: Center(child: ArticleView())),
     );
   }
 }
@@ -37,12 +37,12 @@ class AricleViewModel extends ChangeNotifier {
   final ArticleModel model;
   Summary? summary;
   Exception? error;
-  bool isloading = false;
+  bool isLoading = false;
   AricleViewModel(this.model) {
     fetchArticle();
   }
   void fetchArticle() async {
-    isloading = true;
+    isLoading = true;
     notifyListeners();
     try {
       summary = await model.getRandomArticle();
@@ -51,7 +51,7 @@ class AricleViewModel extends ChangeNotifier {
       summary = null;
       error = e;
     }
-    isloading = false;
+    isLoading = false;
     notifyListeners();
   }
 }
@@ -104,24 +104,42 @@ class ArticlePage extends StatelessWidget {
 }
 
 class ArticleView extends StatefulWidget {
- const ArticleView({super.key});
+  const ArticleView({super.key});
   @override
   State<ArticleView> createState() => _ArticleViewState();
 }
 
 class _ArticleViewState extends State<ArticleView> {
-  final viewModel = ArticleViewModel();
+  final viewModel = AricleViewModel(ArticleModel());
   @override
   void initState() {
     super.initState();
     viewModel.fetchArticle();
   }
   @override
-  Widget build(BuildContext context)
-  return Scaffold(
-    appBar: AppBar(
-      title: const Text("Article"),
-  
-    ),    
-  )
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: ListenableBuilder(
+          listenable: viewModel,
+          builder: (context, child) {
+            return switch ((
+              viewModel.isLoading,
+              viewModel.summary,
+              viewModel.error,
+            )) {
+              (true, _, _) => const CircularProgressIndicator(),
+              (_, _, Exception e) => Text('error $e'),
+              (_, Summary summary, _) => ArticlePage(
+                summary: summary,
+                nextArticle: viewModel.fetchArticle,
+              ),
+              _ => const Text("Something went wrong"),
+            };
+          },
+        ),
+      ),
+    );
+  }
 }
