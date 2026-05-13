@@ -3,7 +3,8 @@ import 'summary.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart';
-import '';
+import 'package:wiki_reader/data/repositories/random_article_repository.dart';
+import 'package:wiki_reader/data/services/random_article.dart';
 
 void main() {
   runApp(const MainApp());
@@ -35,7 +36,7 @@ class ArticleModel {
 }
 
 class AricleViewModel extends ChangeNotifier {
-  final  repository;
+  final ArticleModel repository;
   Summary? summary;
   Exception? error;
   bool isLoading = false;
@@ -117,6 +118,7 @@ class _ArticleViewState extends State<ArticleView> {
     super.initState();
     viewModel.fetchArticle();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
