@@ -3,6 +3,7 @@ import 'summary.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart';
+import '';
 
 void main() {
   runApp(const MainApp());
@@ -22,7 +23,7 @@ class MainApp extends StatelessWidget {
 class ArticleModel {
   Future<Summary> getRandomArticle() async {
     final uri = Uri.https(
-      'en.wikipedia.com',
+      'ru.wikipedia.com',
       'api/rest_v1/page/random/summary',
     );
     final response = await get(uri);
@@ -34,18 +35,18 @@ class ArticleModel {
 }
 
 class AricleViewModel extends ChangeNotifier {
-  final ArticleModel model;
+  final  repository;
   Summary? summary;
   Exception? error;
   bool isLoading = false;
-  AricleViewModel(this.model) {
+  AricleViewModel(this.repository) {
     fetchArticle();
   }
   void fetchArticle() async {
     isLoading = true;
     notifyListeners();
     try {
-      summary = await model.getRandomArticle();
+      summary = await repository.getRandomArticle();
       error = null;
     } on HttpException catch (e) {
       summary = null;
