@@ -22,7 +22,7 @@ class MainApp extends StatelessWidget {
 class ArticleModel {
   Future<Summary> getRandomArticle() async {
     final uri = Uri.https(
-      'en.wikipedia.com'
+      'en.wikipedia.com',
       'api/rest_v1/page/random/summary',
     );
     final response = await get(uri);
@@ -119,7 +119,7 @@ class _ArticleViewState extends State<ArticleView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      //appBar: AppBar(),
       body: Center(
         child: ListenableBuilder(
           listenable: viewModel,
