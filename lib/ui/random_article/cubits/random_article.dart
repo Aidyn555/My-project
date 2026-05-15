@@ -10,29 +10,26 @@ class ArticleLoading extends ArticleState {}
 
 class ArticleLoaded extends ArticleState {
   final Summary summary;
-ArticleLoaded (this.summary);}
+  ArticleLoaded(this.summary);
+}
 
 class ArticleError extends ArticleState {
-final Exception error;
-ArticleError(this.error);}
-
-
-
-
-
+  final Exception error;
+  ArticleError(this.error);
+}
 
 class ArticleCubit extends Cubit<ArticleState> {
   final _repo = RandomArticleRepository();
-  ArticleCubit() : super(ArticleIntial());
+  ArticleCubit() : super(ArticleIntial()) {
+    updateArticle();
+  }
   void updateArticle() async {
     emit(ArticleLoading());
     try {
-      final summary = 
-      await _repo.getRandomArticle();
+      final summary = await _repo.getRandomArticle();
       emit(ArticleLoaded(summary));
     } on Exception catch (e) {
       emit(ArticleError(e));
     }
   }
 }
-
